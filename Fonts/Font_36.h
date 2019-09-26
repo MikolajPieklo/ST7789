@@ -25,8 +25,8 @@
 *  inverse: no
 *******************************************************************************/
 
-#ifndef FONTNEW_H
-#define FONTNEW_H
+#ifndef FONT_36_H
+#define FONT_36_H
 
 #include <stdint.h>
 
@@ -8504,4 +8504,4 @@ static const tChar Font_array[] = {
 };
 const tFont Font = { 95, Font_array };
 
-#endif /* !FONTNEW_H */
+#endif /* !FONT_36_H */

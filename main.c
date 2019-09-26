@@ -1,39 +1,16 @@
-#include <pigpio.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
+#include "ST7789.h"
+
+
+/*#ifndef FONTNEW_H
 #include "Fontnew.h"
+#endif*/
 
-#define PIN_RST 26//25
-#define PIN_DC  19//24
-#define PIN_LED 29//21 
-
-#define ST7789_CASET 0x2A
-#define ST7789_RASET 0x2B
-#define ST7789_RAMWR 0x2C
-
-
-#define ST7789_BLACK    0x0000
-#define ST7789_BLUE     0x001F
-#define ST7789_GREEN    0x07E0
-#define ST7789_RED      0xF800 
-#define ST7789_CYAN     0x07FF
-#define ST7789_MAGENTA  0xF81F 
-#define ST7789_YELLOW   0xFFE0
-#define ST7789_WHITE    0xFFFF
-
-void Init();
-void Reset();
-void SendCommand(uint8_t data);
-void SendData(uint8_t data);
-void SendData2(uint8_t* data, uint8_t len);
-void SetPixel(uint16_t color);
-void SendChar(const uint8_t c);
-void SendText(const uint8_t* text, uint16_t h);
-void SetWindow(uint16_t x_start, uint16_t x_end, uint16_t y_start, uint16_t y_end);
+#include <pigpio.h>
 
 const uint16_t sprite[115200] = {
 		0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,0xe8e4,
@@ -287,15 +264,17 @@ int main (void)
     gpioSetMode(PIN_DC, PI_OUTPUT);
     gpioSetMode(PIN_LED, PI_OUTPUT);
     
-    Reset();
-    Init();
-    SetWindow(0,239,0,239);
-    SetPixel(ST7789_GREEN);
-	SendText("POGON\0", 50);
-    SendText("3:3\0", 100);
-    SendText("BAYERN", 150);
-    SetWindow(0,239,0,239);
-    while(1)
+    ST7789_Reset();
+    ST7789_Init();
+
+
+    ST7789_SetWindow(0,239,0,239);
+    ST7789_SetPixel(ST7789_GREEN);
+    ST7789_SendText("Argentyna\0", 50);
+    ST7789_SendText("5:1\0", 100);
+    ST7789_SendText("Chiny", 150);
+    ST7789_SetWindow(0,239,0,239);
+    /*while(1)
     {
        SetPixel(ST7789_GREEN);
        gpioSleep(0,2,0);
@@ -307,192 +286,7 @@ int main (void)
        gpioSleep(0,2,0);
        SetPixel(ST7789_MAGENTA);
        gpioSleep(0,2,0);
-    }
+    }*/
     
   	return 0 ;
-}
-
-void SetPixel(uint16_t color){
-    uint32_t i=0;
-    uint32_t j=0;
-    for(i = 0; i < 5; i++)
-    {
-        for(j = 0; j < 11520; j++)
-        {
-            SendData((uint8_t)(color>>8));
-            SendData((uint8_t)(color&0xFF));
-        }
-    }
-}
-
-void SendChar(const uint8_t c){
-    uint16_t i = 0;
-    uint16_t j = 0;
-    const uint8_t* p;
-       
-    /*for(i =0; i < 212; i++)
-    {
-        for(j = 0; j < 8; j++)
-        {
-            if((font[c][i] & (0x80 >> j)) == 1 )
-            {
-                SendData(0x00);
-                SendData(0x00); 
-            }
-            else
-            {
-                SendData(0xFF);
-                SendData(0xFF);   
-            }
-        }
-    }*/
-    for(i =0; i < 126; i++)
-    {
-        p = &Font.chars[c-32].image->data[i];
-        for(j = 0; j < 8; j++)
-        {
-			if((*p & (0x80>>j)) != 0)
-            {
-                SendData(0x00);
-                SendData(0x00); 
-            }
-            else
-            {
-                SendData(0xFF);
-                SendData(0xFF);   
-            }
-        }
-    }
-}
-
-void Init(){
-    
-    gpioDelay(10);
-    
-    SendCommand(0x11); //Sleep Out
-    gpioDelay(150);
-
-    SendCommand(0x36); //MADCTL: Memory Data Access Control
-    SendData(0x00);
-
-    SendCommand(0x3A); //COLMOD: Interface Pixel Format 16bit/pixel
-    SendData(0x05);
-
-    SendCommand(0xB2); //PORCTRL: Porch Setting
-    SendData(0x0C);
-    SendData(0x0C);
-
-    SendCommand(0xB7); //GCTRL: Gate Control
-    SendData(0x35);
-
-    SendCommand(0xBB); //VCOMS: VCOM Setting
-    SendData(0x1A);
-
-    SendCommand(0xC0); //LCMCTRL: LCM Control
-    SendData(0x2C);
-
-    SendCommand(0xC2); //VDVVRHEN: VDV and VRH Command Enable
-    SendData(0x01);
-
-    SendCommand(0xC3); //VRHS: VRH Set
-    SendData(0x0B);
-
-    SendCommand(0xC4); //VDVS (C4h): VDV Set
-    SendData(0x20);
-
-    SendCommand(0xC6); //FRCTRL2: Frame Rate Control in Normal Mode
-    SendData(0x0F);
-
-    SendCommand(0xD0); //PWCTRL1: Power Control 1
-    SendData(0xA4);
-    SendData(0xA1);
-
-    SendCommand(0x21); //INVON: Display Inversion On
-
-    SendCommand(0xE0); //PVGAMCTRL: Positive Voltage Gamma Control
-    SendData(0x00);
-    SendData(0x19);
-    SendData(0x1E);
-    SendData(0x0A);
-    SendData(0x09);
-    SendData(0x15);
-    SendData(0x3D);
-    SendData(0x44);
-    SendData(0x51);
-    SendData(0x12);
-    SendData(0x03);
-    SendData(0x00);
-    SendData(0x3F);
-    SendData(0x3F);
-
-    SendCommand(0xE1); //NVGAMCTRL: Negative Voltage Gamma Control
-    SendData(0x00);
-    SendData(0x18);
-    SendData(0x1E);
-    SendData(0x0A);
-    SendData(0x09);
-    SendData(0x25);
-    SendData(0x3F);
-    SendData(0x43);
-    SendData(0x52);
-    SendData(0x33);
-    SendData(0x03);
-    SendData(0x00);
-    SendData(0x3F);
-    SendData(0x3F);
-
-    SendCommand(0x29); //DISPON: Display On
-
-    gpioDelay(100);
-    //delay(100);
-}
-
-void Reset(){
-    gpioWrite(PIN_RST, PI_HIGH);
-    gpioDelay(100);
-    gpioWrite(PIN_RST, PI_LOW);
-    gpioDelay(100);
-    gpioWrite(PIN_RST, PI_HIGH);
-    gpioDelay(100);
-}
-
-void SendCommand(uint8_t data){
-    gpioWrite(PIN_DC, PI_LOW);
-    spiWrite(0,&data,1);
-}
-
-void SendData(uint8_t data){
-    gpioWrite(PIN_DC, PI_HIGH);
-    spiWrite(0,&data,1);
-}
-
-void SendData2(uint8_t* data, uint8_t len){
-    gpioWrite(PIN_DC, PI_HIGH);
-    spiWrite(0,data,len);
-}
-
-void SetWindow(uint16_t x_start, uint16_t x_end, uint16_t y_start, uint16_t y_end){
-    
-    SendCommand(ST7789_CASET);//Column addr set
-    SendData(x_start >> 8);
-    SendData(x_start);// XSTART
-    SendData(x_end >> 8);
-    SendData(x_end);// XEND
-    SendCommand(ST7789_RASET);//Row addr set
-    SendData(y_start >> 8);
-    SendData(y_start);//YSTART
-    SendData(y_end >> 8);
-    SendData(y_end);// YEND
-    SendCommand(ST7789_RAMWR);//write to RAM
-}
-
-void SendText(const uint8_t* text, uint16_t h){
-	uint8_t i = 0;
-	uint8_t len = strlen(text);
-	
-	for(i=0; i<len;i ++)
-	{
-		SetWindow(50 + 23 * i, 73 + 23 * i, h, h + 41);
-		SendChar(*(text + i));
-	}
 }

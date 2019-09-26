@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "ST7789.h"
+#include "ST7789/ST7789.h"
 
 
 /*#ifndef FONTNEW_H

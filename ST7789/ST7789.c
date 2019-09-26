@@ -1,5 +1,5 @@
 #include "ST7789.h"
-#include "Fonts/Font_36.h"
+#include "../Fonts/Font_36.h"
 
 void ST7789_Reset(){
     gpioWrite(PIN_RST, PI_HIGH);

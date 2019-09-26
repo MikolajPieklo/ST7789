@@ -2,7 +2,7 @@
 #define ST7789_H
 
 #ifndef CONFIG_PLATFORM_H
-#include "Config/config_platform.h"
+#include "../Config/config_platform.h"
 #endif
 
 //#ifndef FONTNEW_H

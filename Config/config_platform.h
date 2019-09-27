@@ -1,9 +1,5 @@
-//#include <pigpio.h>
-//#include <stdint.h>
-
 #ifndef CONFIG_PLATFORM_H
 #define CONFIG_PLATFORM_H
-
 
 #define PIN_RST 26//25
 #define PIN_DC  19//24

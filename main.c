@@ -22,11 +22,11 @@ int main (void)
 
     ST7789_SetWindow(0,239,0,239);
     ST7789_SetPixel(ST7789_GREEN);
-    ST7789_SendText("Argentyna\0", 50);
+    ST7789_SendText("cc\0", 50);
     ST7789_SendText("5:1\0", 100);
     ST7789_SendText("Chiny", 150);
     ST7789_SetWindow(0,239,0,239);
-    while(1)
+    /*while(1)
     {
        ST7789_SetPixel(ST7789_GREEN);
        gpioSleep(0,2,0);
@@ -38,7 +38,7 @@ int main (void)
        gpioSleep(0,2,0);
        ST7789_SetPixel(ST7789_MAGENTA);
        gpioSleep(0,2,0);
-    }
+    }*/
     
   	return 0 ;
 }

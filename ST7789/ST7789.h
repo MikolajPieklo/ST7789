@@ -5,10 +5,6 @@
 #include "../Config/config_platform.h"
 #endif
 
-//#ifndef FONTNEW_H
-//#include "Fontnew.h"
-//#endif
-
 #include <pigpio.h>
 
 #include <stdlib.h>

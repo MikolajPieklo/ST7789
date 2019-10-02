@@ -12,6 +12,7 @@ void ST7789_Reset(){
 
 void ST7789_Init(){
 
+	sLCD.Background_color = ST7789_WHITE;
     gpioDelay(10);
 
     ST7789_SendCommand(0x11); //Sleep Out
@@ -93,16 +94,8 @@ void ST7789_Init(){
 }
 
 void ST7789_SetPixel(uint16_t color){
-    uint32_t i=0;
-    uint32_t j=0;
-    for(i = 0; i < 5; i++)
-    {
-        for(j = 0; j < 11520; j++)
-        {
-        	ST7789_SendData((uint8_t)(color>>8));
-        	ST7789_SendData((uint8_t)(color&0xFF));
-        }
-    }
+	ST7789_SendData((uint8_t)(color>>8));
+	ST7789_SendData((uint8_t)(color&0xFF));
 }
 
 void ST7789_SendChar(const uint8_t c){
@@ -122,8 +115,7 @@ void ST7789_SendChar(const uint8_t c){
             }
             else
             {
-            	ST7789_SendData(0xFF);
-            	ST7789_SendData(0xFF);
+            	ST7789_SetPixel(sLCD.Background_color);
             }
         }
     }
@@ -162,5 +154,69 @@ void ST7789_SendText(const uint8_t* text, uint16_t h){
 	{
 		ST7789_SetWindow(50 + 23 * i, 73 + 23 * i, h, h + 41);
 		ST7789_SendChar(*(text + i));
+	}
+}
+
+void LCD_Draw_Rectangle(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, int16_t thickness)
+{
+	if(x0 < x1 && y0 < y1)
+	{
+		ST7789_SetWindow(x0,x1,y0,y1);
+
+		for(uint16_t x=x0;x<=x1;x++)
+		{
+			for(uint16_t y=y0;y<=y1;y++)
+			{
+				if(thickness > 0)
+				{
+					if(x0 + thickness > x || x1 - thickness < x || y0 + thickness > y || y1 - thickness < y)
+					{
+						ST7789_SetPixel(color);
+					}
+					else
+					{
+						ST7789_SetPixel(sLCD.Background_color);// To do background
+					}
+				}
+				else
+					ST7789_SetPixel(color);
+			}
+		}
+	}
+	if(x0 == 0 && x1 == 240 && y0 == 0 && y1 == 240)
+	{
+		sLCD.Background_color = color;
+	}
+}
+
+void LCD_Draw_Line(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, uint16_t thickness)
+{
+	int16_t dx, dy =0;
+	int8_t stepx, stepy =0;
+
+	if(thickness %2 != 0) thickness =+ 1;
+
+	if(x1>x0) {dx = x1 - x0; stepx =1;} else { dx = x0 - x1; stepx = -1;}
+	if(y1>y0) {dy = y1 - y0; stepy =1;} else { dy = y0 - y1; stepy = -1;}
+
+	if(dx > dy)
+	{
+
+	}
+	else if(dx == dy)
+	{
+		for(uint16_t x = x0; x < x1; x++)
+		{
+			ST7789_SetWindow(x, x, x, x);
+			ST7789_SetPixel(color);
+		}
+	}
+	else if (dx < dy)
+	{
+
+	}
+	else
+	{
+
 	}
 }

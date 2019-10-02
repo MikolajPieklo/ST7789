@@ -19,13 +19,15 @@ int main (void)
     ST7789_Reset();
     ST7789_Init();
 
-
-    ST7789_SetWindow(0,239,0,239);
-    ST7789_SetPixel(ST7789_GREEN);
-    ST7789_SendText("cc\0", 50);
+    LCD_Draw_Rectangle(0,240,0,240, ST7789_RED, -1);
+    LCD_Draw_Rectangle(50,200,50,200, ST7789_BLACK, 2);
+    LCD_Draw_Line(60,160,80,190,ST7789_BLACK,10);
+    /*ST7789_SendText("Hey\0", 50);
     ST7789_SendText("5:1\0", 100);
     ST7789_SendText("Chiny", 150);
-    ST7789_SetWindow(0,239,0,239);
+    ST7789_SetWindow(0,239,0,239);*/
+
+
     /*while(1)
     {
        ST7789_SetPixel(ST7789_GREEN);

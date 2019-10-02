@@ -25,6 +25,10 @@
 #define ST7789_YELLOW   0xFFE0
 #define ST7789_WHITE    0xFFFF
 
+struct LCD
+{
+	uint16_t Background_color;
+}sLCD;
 
 void ST7789_Init(void);
 void ST7789_Reset(void);
@@ -36,5 +40,8 @@ void ST7789_SetWindow(uint16_t x_start, uint16_t x_end, uint16_t y_start, uint16
 void ST7789_SendText(const uint8_t* text, uint16_t h);
 void ST7789_SetPixel(uint16_t color);
 void ST7789_SendChar(const uint8_t c);
+
+void LCD_Draw_Rectangle	(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, int16_t thickness);
+void LCD_Draw_Line		(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, uint16_t thickness);
 
 #endif /* !ST7789_H */

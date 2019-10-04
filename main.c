@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include "ST7789/ST7789.h"
+#include "LCD/LCD.h"
+#include "Images/Images.h"
 
 #include <pigpio.h>
 
@@ -19,9 +21,24 @@ int main (void)
     ST7789_Reset();
     ST7789_Init();
 
-    LCD_Draw_Rectangle(0,240,0,240, ST7789_RED, -1);
-    LCD_Draw_Rectangle(50,200,50,200, ST7789_BLACK, 2);
-    LCD_Draw_Line(60,160,80,190,ST7789_BLACK,10);
+    LCD_Draw_Rectangle(0,0,239,239, ST7789_RED, -1);
+    LCD_Draw_Rectangle(50,50,190,190, ST7789_BLACK, 2);
+    LCD_Draw_Line(10,10,90,10,ST7789_BLACK,10);
+    LCD_Draw_Circle(100,100,80,ST7789_BLUE,-1);
+
+    LCD_Draw_Bitmap_565(mars);
+    gpioSleep(0,2,0);
+    LCD_Draw_Bitmap_565(jupiter);
+    gpioSleep(0,2,0);
+    LCD_Draw_Bitmap_565(saturn);
+    gpioSleep(0,2,0);
+    LCD_Draw_Bitmap_565(uranus);
+    gpioSleep(0,2,0);
+    LCD_Draw_Bitmap_565(neptun);
+    gpioSleep(0,2,0);
+    LCD_Draw_Bitmap_565(pluto);
+
+    //
     /*ST7789_SendText("Hey\0", 50);
     ST7789_SendText("5:1\0", 100);
     ST7789_SendText("Chiny", 150);

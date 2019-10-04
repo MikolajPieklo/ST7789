@@ -41,7 +41,4 @@ void ST7789_SendText(const uint8_t* text, uint16_t h);
 void ST7789_SetPixel(uint16_t color);
 void ST7789_SendChar(const uint8_t c);
 
-void LCD_Draw_Rectangle	(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, int16_t thickness);
-void LCD_Draw_Line		(uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1, uint16_t color, uint16_t thickness);
-
 #endif /* !ST7789_H */
